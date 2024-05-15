@@ -55,3 +55,11 @@ export const signIn = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const signOut = (req, res, next) => {
+  try {
+    res.clearCookie("access_token").status(200).send("User has been loggout!");
+  } catch (err) {
+    next(createError());
+  }
+};
