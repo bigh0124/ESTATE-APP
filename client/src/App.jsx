@@ -4,6 +4,7 @@ import HomePage from "./pages/homePage/HomePage";
 import Layout from "./pages/layout/Layout";
 import SinglePage from "./pages/singlePage/SinglePage";
 import ProfilePage from "./pages/profilePage/ProfilePage";
+import Register from "./pages/register/register";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const App = () => {
         {
           path: "/profile",
           element: <ProfilePage />,
+        },
+        {
+          path: "/register",
+          element: <Register />,
         },
       ],
     },
