@@ -1,0 +1,27 @@
+.popupContainer {
+  display: flex;
+  gap: 1rem;
+
+  img {
+    width: 6.4rem;
+    // height: 4.8rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  span {
+    font-size: 1.2rem;
+  }
+
+  b {
+    font-size: 1.1rem;
+    font-weight: 300;
+  }
+}

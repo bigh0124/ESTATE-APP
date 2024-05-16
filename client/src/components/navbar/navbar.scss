@@ -1,0 +1,155 @@
+@import "../../responsive.scss";
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10rem;
+
+  a {
+    transition: all 0.4s ease;
+
+    @include sm {
+      display: none;
+    }
+
+    &:hover {
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      perspective: 1px;
+      scale: 1.05;
+    }
+  }
+
+  .left {
+    flex: 3;
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+
+    span {
+      @include md {
+        display: none;
+      }
+
+      @include sm {
+        display: initial;
+      }
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      img {
+        width: 2.8rem;
+      }
+    }
+  }
+
+  .right {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #fcf5f3;
+    height: 100%;
+
+    @include md {
+      background-color: transparent;
+    }
+
+    a {
+      margin: 2rem;
+      padding: 1.2rem 2.4rem;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+
+      img {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 2rem;
+      }
+
+      span {
+        @include sm {
+          display: none;
+        }
+      }
+
+      .profileBtn {
+        cursor: pointer;
+        padding: 1.2rem 2.4rem;
+        border: none;
+        background-color: #fece51;
+        position: relative;
+
+        .notification {
+          position: absolute;
+          top: -1rem;
+          right: -1rem;
+          background-color: red;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 2.2rem;
+          width: 2.2rem;
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .register {
+      background-color: #fece51;
+    }
+
+    .menuIcon {
+      display: none;
+      z-index: 1000;
+      img {
+        width: 3.6rem;
+        height: 3.6rem;
+        cursor: pointer;
+      }
+
+      @include sm {
+        display: initial;
+      }
+    }
+
+    .menu {
+      position: absolute;
+      font-size: 2.4rem;
+      top: 0;
+      right: -50%;
+      background-color: black;
+      color: white;
+      height: 100vh;
+      width: 50%;
+      transition: all 1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      &.active {
+        right: 0;
+
+        a {
+          @include sm {
+            display: initial;
+          }
+        }
+      }
+    }
+  }
+}
