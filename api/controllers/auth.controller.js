@@ -7,6 +7,22 @@ export const register = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   try {
+    //check if the username duplicated
+    const isUsernameDuplicated = await prisma.user.findUnique({ where: { username } });
+    if (isUsernameDuplicated) {
+      return next(
+        createError(409, "the username provided in the registration request already exists and cannot be duplicated.")
+      );
+    }
+
+    //check if the email duplicated
+    const isEmailDuplicated = await prisma.user.findUnique({ where: { email } });
+    if (isEmailDuplicated) {
+      return next(
+        createError(409, "the email provided in the registration request already exists and cannot be duplicated.")
+      );
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await prisma.user.create({
