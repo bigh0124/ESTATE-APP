@@ -66,6 +66,17 @@
           }
         }
       }
+
+      .signOut {
+        align-self: start;
+        background-color: red;
+        color: white;
+        font-size: 2rem;
+        padding: 1rem 5rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
     }
   }
 

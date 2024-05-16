@@ -1,8 +1,24 @@
 import Chat from "../../components/chat/Chat";
 import List from "../../components/list/List";
 import "./profilePage.scss";
-
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "../../api/apiRequest";
+import { useNavigate } from "react-router-dom";
 const ProfilePage = () => {
+  const navigate = useNavigate();
+
+  const signOut = useMutation({
+    mutationKey: "signOut",
+    mutationFn: async () => {
+      try {
+        await apiRequest.post("/auth/signOut");
+        navigate("/");
+      } catch (err) {
+        throw err;
+      }
+    },
+  });
+
   return (
     <div className="profilePage">
       <div className="details">
@@ -23,6 +39,9 @@ const ProfilePage = () => {
               E-mail: <span>john@mail.com</span>
             </span>
           </div>
+          <button className="signOut" onClick={() => signOut.mutate()} disabled={signOut.isPending}>
+            Sign out
+          </button>
           <div className="title">
             <h1>My List</h1>
             <button>Create New Post</button>
