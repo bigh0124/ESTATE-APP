@@ -56,7 +56,7 @@ export const signIn = async (req, res, next) => {
     if (!isPasswordCorrect) return next(createError(401, "Invalid Credentials: Password NOT correct"));
 
     //generate cookie token and send to the user
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     const { password: userPassword, ...userInfo } = user;
 
