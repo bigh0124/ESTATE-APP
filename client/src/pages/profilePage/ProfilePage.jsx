@@ -4,14 +4,18 @@ import "./profilePage.scss";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const { currentUser, updateUser } = useContext(AuthContext);
 
   const signOut = useMutation({
     mutationKey: "signOut",
     mutationFn: async () => {
       try {
         await apiRequest.post("/auth/signOut");
+        updateUser(null);
         navigate("/");
       } catch (err) {
         throw err;
@@ -30,13 +34,13 @@ const ProfilePage = () => {
           <div className="info">
             <span>
               Avatar:
-              <img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" />
+              <img src={currentUser.avatar || "/noavatar.jpg"} />
             </span>
             <span>
-              Username: <b>John</b>
+              Username: <b>{currentUser.username}</b>
             </span>
             <span>
-              E-mail: <span>john@mail.com</span>
+              E-mail: <span>{currentUser.email}</span>
             </span>
           </div>
           <button className="signOut" onClick={() => signOut.mutate()} disabled={signOut.isPending}>
