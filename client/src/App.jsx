@@ -7,6 +7,7 @@ import SinglePage from "./pages/singlePage/SinglePage";
 import ProfilePage from "./pages/profilePage/ProfilePage";
 import Register from "./pages/register/register";
 import Login from "./pages/login/Login";
+import { AuthContextProvider } from "./context/AuthContext";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -47,7 +48,9 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <AuthContextProvider>
+        <RouterProvider router={router} />
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 };
