@@ -58,6 +58,8 @@ export const signIn = async (req, res, next) => {
     //generate cookie token and send to the user
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
+    const { password: userPassword, ...userInfo } = user;
+
     res
       .cookie("access_token", token, {
         httpOnly: true,
@@ -66,7 +68,7 @@ export const signIn = async (req, res, next) => {
         //  secure: true
       })
       .status(200)
-      .json({ message: "Sign In successfully" });
+      .json({ ...userInfo });
   } catch (err) {
     next(createError());
   }
