@@ -1,23 +1,27 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./login.scss";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { updateUser } = useContext(AuthContext);
 
   const { mutate, isPending, isError } = useMutation({
     mutationKey: "login",
     mutationFn: async () => {
       try {
-        await apiRequest.post("/auth/signIn", {
+        const res = await apiRequest.post("/auth/signIn", {
           username,
           password,
         });
+        updateUser(res.data);
+
         navigate("/");
       } catch (err) {
         throw err;
