@@ -8,6 +8,7 @@ import ProfilePage from "./pages/profilePage/ProfilePage";
 import Register from "./pages/register/register";
 import Login from "./pages/login/Login";
 import { AuthContextProvider } from "./context/AuthContext";
+import ProfileUpdatePage from "./pages/profileUpdatePage/ProfileUpdatePage";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -46,6 +47,10 @@ const App = () => {
         {
           path: "/profile",
           element: <ProfilePage />,
+        },
+        {
+          path: "/profile/update",
+          element: <ProfileUpdatePage />,
         },
       ],
     },
