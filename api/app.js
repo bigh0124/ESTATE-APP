@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import authRoute from "./routes/auth.route.js";
+import userRoute from "./routes/user.route.js";
 import cors from "cors";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoute);
+app.use("/api/user/", userRoute);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
