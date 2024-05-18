@@ -19,16 +19,17 @@ export const getUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   if (req.userId !== req.params.userId) next(createError(403, "Not Authoriztion"));
+  const { password, avatar, ...inputs } = req.body;
 
   try {
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10);
+    if (password) {
+      password = await bcrypt.hash(password, 10);
     }
     const updatedUser = await prisma.user.update({
       where: { id: req.userId },
-      data: { ...req.body },
+      data: { ...inputs, ...(password && { password }), ...(avatar && { avatar }) },
     });
-    const { password, ...userInfo } = updatedUser;
+    const { password: userPassword, ...userInfo } = updatedUser;
     res.status(200).json(userInfo);
   } catch (err) {
     next(createError());
