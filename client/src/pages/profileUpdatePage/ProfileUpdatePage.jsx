@@ -1,15 +1,39 @@
 import { useContext, useState } from "react";
 import "./profileUpdatePage.scss";
 import { AuthContext } from "../../context/AuthContext";
+import { apiRequest } from "../../api/apiRequest";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 const ProfileUpdatePage = () => {
   const { currentUser, updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     username: currentUser.username,
     email: currentUser.email,
     password: "",
-    avatar: currentUser.avatar,
   });
+
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationKey: "updateUser",
+    mutationFn: async () => {
+      try {
+        const res = await apiRequest.put(`/user/updateUser/${currentUser.id}`, {
+          ...user,
+        });
+        updateUser(res.data);
+
+        navigate("/profile");
+      } catch (err) {
+        throw err;
+      }
+    },
+  });
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    mutate();
+  };
 
   const handleChange = (e) => {
     setUser((prev) => {
@@ -20,7 +44,7 @@ const ProfileUpdatePage = () => {
   return (
     <div className="profileUpdatePage">
       <div className="formContainer">
-        <form>
+        <form onSubmit={handleFormSubmit}>
           <h1>Update Profile</h1>
           <div className="item">
             <label htmlFor="username">Username</label>
@@ -34,11 +58,14 @@ const ProfileUpdatePage = () => {
             <label htmlFor="password">Password</label>
             <input id="password" name="password" type="password" value={user.password} onChange={handleChange} />
           </div>
-          <button>Update</button>
+          <button type="submit" disabled={isPending}>
+            Update
+          </button>
+          {isError && <span>{error}</span>}
         </form>
       </div>
       <div className="sideContainer">
-        <img src={user.avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <img src={currentUser.avatar || "/noavatar.jpg"} alt="" className="avatar" />
       </div>
     </div>
   );
