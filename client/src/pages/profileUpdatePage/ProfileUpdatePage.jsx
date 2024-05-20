@@ -4,9 +4,11 @@ import { AuthContext } from "../../context/AuthContext";
 import { apiRequest } from "../../api/apiRequest";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import UploadWidget from "../../components/uploadWidget/UploadWidget";
 
 const ProfileUpdatePage = () => {
   const { currentUser, updateUser } = useContext(AuthContext);
+  const [avatar, setAvatar] = useState(currentUser.avatar);
   const navigate = useNavigate();
   const [user, setUser] = useState({
     username: currentUser.username,
@@ -20,6 +22,7 @@ const ProfileUpdatePage = () => {
       try {
         const res = await apiRequest.put(`/user/updateUser/${currentUser.id}`, {
           ...user,
+          ...(avatar && { avatar }),
         });
         updateUser(res.data);
 
@@ -65,7 +68,17 @@ const ProfileUpdatePage = () => {
         </form>
       </div>
       <div className="sideContainer">
-        <img src={currentUser.avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <img src={avatar || "/noavatar.jpg"} alt="" className="avatar" />
+        <UploadWidget
+          uwConfig={{
+            cloudName: "dtkepckgq",
+            uploadPreset: "ESTATEAPP",
+            multiple: false,
+            maxImageFileSize: 2000000,
+            folder: "avatars",
+          }}
+          setAvatar={setAvatar}
+        />
       </div>
     </div>
   );
