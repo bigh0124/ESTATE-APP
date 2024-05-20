@@ -7,7 +7,7 @@ import Map from "../../components/map/Map.jsx";
 const ListsPage = () => {
   const lists = listData;
   return (
-    <div className="list">
+    <div className="listPage">
       <div className="listContainer">
         <div className="wrapper">
           <Filter />
