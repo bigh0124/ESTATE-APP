@@ -58,3 +58,20 @@ export const updatePost = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const deletePost = async (req, res, next) => {
+  const postId = req.params.postId;
+  const userId = req.userId;
+
+  try {
+    const post = await prisma.post.findUnique({ where: { id: postId } });
+    if (!post) return next(createError(404, "post not found"));
+    if (post.userId !== userId) return next(createError(403, "You are only allowed to delete your own post."));
+    await prisma.post.delete({
+      where: { id: postId },
+    });
+    res.status(200).json("Post deleted");
+  } catch (err) {
+    next(createError());
+  }
+};
