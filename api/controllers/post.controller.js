@@ -36,7 +36,7 @@ export const getPost = async (req, res, next) => {
 export const addPost = async (req, res, next) => {
   const { postData, postDetail } = req.body;
   const userId = req.userId;
-  console.log({ ...postData, userId, postDetail });
+  // console.log({ ...postData, userId, postDetail });
   try {
     const newPost = await prisma.post.create({
       data: {
