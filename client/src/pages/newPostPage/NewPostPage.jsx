@@ -1,6 +1,11 @@
 import "./newPostPage.scss";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import { useState } from "react";
 
-function NewPostPage() {
+const NewPostPage = () => {
+  const [desc, setDesc] = useState("");
+
   return (
     <div className="newPostPage">
       <div className="formContainer">
@@ -21,6 +26,7 @@ function NewPostPage() {
             </div>
             <div className="item description">
               <label htmlFor="desc">Description</label>
+              <ReactQuill theme="snow" onChange={(e) => setDesc(e.target.value)} value={desc} />
             </div>
             <div className="item">
               <label htmlFor="city">City</label>
@@ -102,6 +108,6 @@ function NewPostPage() {
       <div className="sideContainer"></div>
     </div>
   );
-}
+};
 
 export default NewPostPage;
