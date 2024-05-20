@@ -1,9 +1,11 @@
 import express from "express";
-import { getPost, getPosts } from "../controllers/post.controller.js";
+import { addPost, getPost, getPosts } from "../controllers/post.controller.js";
+import verifyToken from "../middleware/verifyToken.js";
 
 const router = express.Router();
 
 router.get("/getPosts", getPosts);
 router.get("/getPost/:postId", getPost);
+router.post("/addPost", verifyToken, addPost);
 
 export default router;

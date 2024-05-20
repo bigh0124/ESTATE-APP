@@ -21,3 +21,21 @@ export const getPost = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const addPost = async (req, res, next) => {
+  const body = req.body;
+  const userId = req.userId;
+  console.log({ ...body, userId });
+  try {
+    const newPosts = await prisma.post.create({
+      data: {
+        ...body,
+        userId,
+      },
+    });
+
+    res.status(201).json(newPosts);
+  } catch (err) {
+    next(createError());
+  }
+};
