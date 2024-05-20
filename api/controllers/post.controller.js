@@ -15,7 +15,15 @@ export const getPost = async (req, res, next) => {
   try {
     const post = await prisma.post.findUnique({
       where: { id: req.params.postId },
-      include: { postDetail: true, user: true },
+      include: {
+        postDetail: true,
+        user: {
+          select: {
+            username: true,
+            avatar: true,
+          },
+        },
+      },
     });
     if (!post) return next(createError(404, "post not found"));
 
