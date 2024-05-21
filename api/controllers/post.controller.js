@@ -2,8 +2,22 @@ import prisma from "../lib/prisma.js";
 import { createError } from "../utils/createError.js";
 
 export const getPosts = async (req, res, next) => {
+  const query = req.query;
   try {
-    const posts = await prisma.post.findMany({ take: 10 });
+    const posts = await prisma.post.findMany({
+      take: 10,
+      where: {
+        city: query.city || undefined,
+        bedroom: parseInt(query.bedroom, 10) || undefined,
+        bathroom: parseInt(query.bathroom, 10) || undefined,
+        type: query.type || undefined,
+        property: query.property || undefined,
+        price: {
+          gte: parseInt(query.minPrice, 10) || 0,
+          lte: parseInt(query.maxPrice, 10) || 100000000,
+        },
+      },
+    });
     if (!posts) return next(createError(404, "posts not found"));
     res.status(200).json(posts);
   } catch (err) {
@@ -47,7 +61,7 @@ export const addPost = async (req, res, next) => {
         },
       },
     });
-    console.log("newPost", newPost);
+    // console.log("newPost", newPost);
     res.status(201).json(newPost);
   } catch (err) {
     console.log(err);
@@ -81,13 +95,19 @@ export const deletePost = async (req, res, next) => {
 
   try {
     const post = await prisma.post.findUnique({ where: { id: postId } });
-    if (!post) return next(createError(404, "post not found"));
-    if (post.userId !== userId) return next(createError(403, "You are only allowed to delete your own post."));
-    await prisma.post.delete({
-      where: { id: postId },
-    });
-    res.status(200).json("Post deleted");
+
+    if (!post) {
+      return next(createError(404, "Post not found"));
+    }
+
+    if (post.userId !== userId) {
+      return next(createError(403, "You are only allowed to delete your own post."));
+    }
+
+    await prisma.post.delete({ where: { id: postId } });
+    res.status(200).json({ message: "Post deleted" });
   } catch (err) {
-    next(createError());
+    console.error("Error deleting post:", err);
+    next(createError(500, "Internal Server Error"));
   }
 };
