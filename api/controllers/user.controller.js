@@ -19,8 +19,8 @@ export const getUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   if (req.userId !== req.params.userId) next(createError(403, "Not Authoriztion"));
-  const { password, avatar, ...inputs } = req.body;
-
+  let { password, avatar, ...inputs } = req.body;
+  if (avatar) avatar = avatar[0];
   try {
     if (password) {
       password = await bcrypt.hash(password, 10);
