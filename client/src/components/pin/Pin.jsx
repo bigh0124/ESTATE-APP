@@ -8,7 +8,7 @@ const Pin = ({ item }) => {
     <Marker position={[item.latitude, item.longitude]}>
       <Popup>
         <div className="popupContainer">
-          <img src={item.img} alt="" />
+          <img src={item.images[0]} alt="" />
           <div className="text">
             <Link to={`/${item.id}`}>
               <h2> {item.title}</h2>
