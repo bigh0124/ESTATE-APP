@@ -4,7 +4,7 @@ import "./slider.scss";
 const Slider = ({ images }) => {
   const [firstImage, ...restImage] = images;
   const [imageIndex, setImageIndex] = useState(null);
-  console.log(imageIndex);
+  // console.log(imageIndex);
   const handleImageClick = (imageIndex) => {
     setImageIndex(imageIndex);
   };
