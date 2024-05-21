@@ -2,11 +2,11 @@ import "./card.scss";
 import { Link } from "react-router-dom";
 
 const Card = ({ item }) => {
-  const { id, title, img, address, price, bedroom, bathroom } = item;
+  const { id, title, images, address, price, bedroom, bathroom } = item;
   return (
     <div className="card">
       <Link to={`/${id}`} className="imgContainer">
-        <img src={img} alt="img" />
+        <img src={images[0]} alt="img" />
       </Link>
       <div className="infoContainer">
         <h1>
