@@ -1,15 +1,17 @@
 import Slider from "../../components/slider/Slider";
 import Map from "../../components/map/Map";
 import "./singlePage.scss";
-import { singlePostData, userData } from "../../lib/dummyData";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest";
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const SinglePage = () => {
   const [post, setPost] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { currentUser } = useContext(AuthContext);
   const { mutate, isPending, isSuccess } = useMutation({
     mutationKey: "getPost",
     mutationFn: async () => {
@@ -22,9 +24,31 @@ const SinglePage = () => {
     },
   });
 
+  const savePost = useMutation({
+    mutationFn: async () => {
+      try {
+        await apiRequest.post("/post/savePost", {
+          postId: id,
+          userId: currentUser.id,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+
   useEffect(() => {
     mutate();
   }, []);
+
+  const handleSavePost = () => {
+    if (!currentUser) {
+      navigate("/login");
+    } else {
+      savePost.mutate();
+      setPost((prev) => ({ ...prev, isSaved: !post.isSaved }));
+    }
+  };
 
   if (isPending) return <div>Loading...</div>;
 
@@ -127,7 +151,7 @@ const SinglePage = () => {
               <button>
                 <img src="/chat.png" alt="" /> Send a Message
               </button>
-              <button>
+              <button className={post.isSaved && "active"} onClick={handleSavePost}>
                 <img src="/save.png" alt="" /> Save a Place
               </button>
             </div>
