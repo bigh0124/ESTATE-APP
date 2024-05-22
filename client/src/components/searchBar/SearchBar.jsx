@@ -14,7 +14,6 @@ const SearchBar = () => {
 
   const handleFormChange = (e) => {
     setQuery((prev) => {
-      console.log(prev);
       return {
         ...prev,
         [e.target.name]: e.target.value,
