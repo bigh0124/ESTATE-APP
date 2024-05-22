@@ -1,5 +1,6 @@
 import prisma from "../lib/prisma.js";
 import { createError } from "../utils/createError.js";
+import jwt from "jsonwebtoken";
 
 export const getPosts = async (req, res, next) => {
   const query = req.query;
@@ -41,7 +42,25 @@ export const getPost = async (req, res, next) => {
     });
     if (!post) return next(createError(404, "post not found"));
 
-    res.status(200).json(post);
+    const token = req.cookies?.access_token;
+    if (token) {
+      jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+        if (err) return next(createError(403, "Forbidden!"));
+
+        const saved = await prisma.savedPost.findUnique({
+          where: {
+            userId_postId: {
+              userId: payload.id,
+              postId: req.params.postId,
+            },
+          },
+        });
+
+        return res.status(200).json({ ...post, isSaved: saved ? true : false });
+      });
+    } else {
+      res.status(200).json({ ...post, isSaved: false });
+    }
   } catch (err) {
     next(createError());
   }
