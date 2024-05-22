@@ -1,9 +1,7 @@
 import "./listPage.scss";
 import Filter from "../../components/filter/Filter";
 import Card from "../../components/card/Card";
-
 import Map from "../../components/map/Map.jsx";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest.js";
 
@@ -20,18 +18,18 @@ const ListsPage = () => {
         const searchQuery = urlParams.toString();
         console.log(searchQuery);
         const res = await apiRequest.get(`/post/getPosts?${searchQuery}`);
-        console.log(res.data);
         return res.data;
       } catch (err) {
         console.log(err);
       }
     },
   });
-
+  console.log(lists);
   if (isPending) return <div>Loading...</div>;
 
   return (
-    lists && (
+    lists &&
+    isSuccess && (
       <div className="listPage">
         <div className="listContainer">
           <div className="wrapper">
@@ -41,7 +39,9 @@ const ListsPage = () => {
             })}
           </div>
         </div>
-        <div className="mapContainer">{/* <Map items={lists} /> */}</div>
+        <div className="mapContainer">
+          <Map items={lists} />
+        </div>
       </div>
     )
   );
