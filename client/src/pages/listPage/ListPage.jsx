@@ -4,27 +4,41 @@ import Card from "../../components/card/Card";
 import Map from "../../components/map/Map.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest.js";
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 const ListsPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filterQuery, setFilterQuery] = useState({
+    type: searchParams.get("type"),
+    city: searchParams.get("city"),
+    minPrice: searchParams.get("minPrice"),
+    maxPrice: searchParams.get("maxPrice"),
+    property: searchParams.get("property"),
+    bedroom: searchParams.get("bedroom"),
+  });
+
   const {
     data: lists,
     isPending,
     isSuccess,
+    refetch,
   } = useQuery({
-    queryKey: ["getPosts"],
     queryFn: async () => {
-      const urlParams = new URLSearchParams(window.location.search);
       try {
-        const searchQuery = urlParams.toString();
-        console.log(searchQuery);
-        const res = await apiRequest.get(`/post/getPosts?${searchQuery}`);
+        const res = await apiRequest.get(`/post/getPosts?${searchParams.toString()}`);
         return res.data;
       } catch (err) {
         console.log(err);
       }
     },
+    queryKey: ["getPosts"],
   });
-  console.log(lists);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, searchParams]);
+
   if (isPending) return <div>Loading...</div>;
 
   return (
@@ -33,7 +47,7 @@ const ListsPage = () => {
       <div className="listPage">
         <div className="listContainer">
           <div className="wrapper">
-            <Filter />
+            <Filter filterQuery={filterQuery} />
             {lists.map((list) => {
               return <Card key={list.id} item={list} />;
             })}
