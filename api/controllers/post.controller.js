@@ -111,3 +111,38 @@ export const deletePost = async (req, res, next) => {
     next(createError(500, "Internal Server Error"));
   }
 };
+
+export const savePost = async (req, res, next) => {
+  const userId = req.userId;
+  const postId = req.body.postId;
+
+  try {
+    const savedPost = await prisma.savedPost.findUnique({
+      where: {
+        userId_postId: {
+          userId,
+          postId,
+        },
+      },
+    });
+    if (savedPost) {
+      await prisma.savedPost.delete({
+        where: {
+          id: savedPost.id,
+        },
+      });
+      return res.status(200).json("savedPost deleted");
+    }
+    if (!savedPost) {
+      const newSavedPost = await prisma.savedPost.create({
+        data: {
+          userId,
+          postId,
+        },
+      });
+      return res.status(201).json(newSavedPost);
+    }
+  } catch (err) {
+    next(createError());
+  }
+};
