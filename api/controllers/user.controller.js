@@ -35,3 +35,30 @@ export const updateUser = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const getProfilePosts = async (req, res, next) => {
+  const userId = req.userId;
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        userId,
+      },
+    });
+    if (!posts) {
+      return next(createError(404, "Posts not found"));
+    }
+    const saved = await prisma.savedPost.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        post: true,
+      },
+    });
+    const savedPosts = saved.map((item) => item.post);
+
+    res.status(200).json({ myPosts: posts, savedPosts: savedPosts });
+  } catch (err) {
+    next(createError());
+  }
+};
