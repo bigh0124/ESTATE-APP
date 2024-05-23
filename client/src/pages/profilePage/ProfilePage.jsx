@@ -1,10 +1,10 @@
 import Chat from "../../components/chat/Chat";
 import List from "../../components/list/List";
 import "./profilePage.scss";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -22,6 +22,19 @@ const ProfilePage = () => {
       }
     },
   });
+
+  const { data, isLoading } = useQuery({
+    queryFn: async () => {
+      try {
+        const res = await apiRequest.get("/user/getProfilePosts");
+        return res.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    queryKey: ["getProfilePosts"],
+  });
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="profilePage">
@@ -54,11 +67,13 @@ const ProfilePage = () => {
               <button>Create New Post</button>
             </Link>
           </div>
-          <List />
+          {data && <List posts={data.myPosts} />}
+          {data.myPosts.length === 0 && <div>Start Creating Your Own Post</div>}
           <div className="title">
             <h1>Saved List</h1>
           </div>
-          <List />
+          {data && <List posts={data.savedPosts} />}
+          {data.savedPosts.length === 0 && <Link to="/list">Discover and Save Your Favorites!</Link>}
         </div>
       </div>
       <div className="chatContainer">
