@@ -10,12 +10,12 @@ import { useEffect, useState } from "react";
 const ListsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filterQuery, setFilterQuery] = useState({
-    type: searchParams.get("type"),
-    city: searchParams.get("city"),
-    minPrice: searchParams.get("minPrice"),
-    maxPrice: searchParams.get("maxPrice"),
-    property: searchParams.get("property"),
-    bedroom: searchParams.get("bedroom"),
+    type: searchParams.get("type") || "",
+    city: searchParams.get("city") || "",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    property: searchParams.get("property") || "",
+    bedroom: searchParams.get("bedroom") || "",
   });
 
   const {
