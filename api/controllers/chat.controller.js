@@ -67,3 +67,27 @@ export const addChat = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const readChat = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    const chat = await prisma.chat.update({
+      where: {
+        id: req.params.chatId,
+        userIDs: {
+          hasSome: [userId],
+        },
+      },
+      data: {
+        seenBy: {
+          set: [userId],
+        },
+      },
+    });
+    res.status(200).json(chat);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to read chat!" });
+  }
+};
