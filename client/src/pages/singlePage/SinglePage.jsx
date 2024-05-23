@@ -151,7 +151,7 @@ const SinglePage = () => {
               <button>
                 <img src="/chat.png" alt="" /> Send a Message
               </button>
-              <button className={post.isSaved && "active"} onClick={handleSavePost}>
+              <button className={post.isSaved ? "active" : ""} onClick={handleSavePost}>
                 <img src="/save.png" alt="" /> Save a Place
               </button>
             </div>
