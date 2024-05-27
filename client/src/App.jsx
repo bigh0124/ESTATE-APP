@@ -10,6 +10,7 @@ import Login from "./pages/login/Login";
 import { AuthContextProvider } from "./context/AuthContext";
 import ProfileUpdatePage from "./pages/profileUpdatePage/ProfileUpdatePage";
 import NewPostPage from "./pages/newPostPage/NewPostPage";
+import { SocketContextProvider } from "./context/SocketContext";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -63,9 +64,11 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthContextProvider>
-        <RouterProvider router={router} />
-      </AuthContextProvider>
+      <SocketContextProvider>
+        <AuthContextProvider>
+          <RouterProvider router={router} />
+        </AuthContextProvider>
+      </SocketContextProvider>
     </QueryClientProvider>
   );
 };
