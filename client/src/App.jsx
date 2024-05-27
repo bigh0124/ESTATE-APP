@@ -64,11 +64,11 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SocketContextProvider>
-        <AuthContextProvider>
+      <AuthContextProvider>
+        <SocketContextProvider>
           <RouterProvider router={router} />
-        </AuthContextProvider>
-      </SocketContextProvider>
+        </SocketContextProvider>
+      </AuthContextProvider>
     </QueryClientProvider>
   );
 };
