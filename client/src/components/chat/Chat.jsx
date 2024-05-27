@@ -1,17 +1,25 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./chat.scss";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "../../api/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { format } from "timeago.js";
+import { SocketContext } from "../../context/SocketContext";
 
 const Chat = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [receiver, setReceiver] = useState(null);
   const [chat, setChat] = useState(null);
   const { currentUser } = useContext(AuthContext);
+  const { socket } = useContext(SocketContext);
   const [text, setText] = useState("");
   const queryClient = useQueryClient();
+  const messageEndRef = useRef();
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [chat]);
+
   const { data: chats, isLoading } = useQuery({
     queryFn: async () => {
       try {
@@ -43,12 +51,31 @@ const Chat = () => {
         const res = await apiRequest.post(`/message/addMessage/${chat.id}`, {
           text,
         });
+        setChat((prev) => ({ ...prev, Message: [...prev.Message, res.data] }));
+        socket.emit("sendMessage", {
+          receiverId: receiver.id,
+          data: res.data,
+        });
         return res.data;
       } catch (err) {
         console.log(err);
       }
     },
   });
+
+  useEffect(() => {
+    if (chat && socket) {
+      socket.on("getMessage", (data) => {
+        if (chat.id === data.chatId) {
+          setChat((prev) => ({ ...prev, Message: [...prev.Message, data] }));
+        }
+      });
+    }
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [chat, socket]);
+
   const handleChatClick = (chatId, e, receiver) => {
     setReceiver(receiver);
     if (!chatOpen) {
@@ -62,7 +89,7 @@ const Chat = () => {
     e.preventDefault();
     if (!text) return;
     await sendMessage.mutateAsync(text);
-    mutate(chat.id);
+    // mutate(chat.id);
     queryClient.invalidateQueries({ queryKey: ["getChats"] });
     setText("");
   };
@@ -104,7 +131,7 @@ const Chat = () => {
           </div>
           <div className="center">
             {chatData &&
-              chatData.Message.map((message) => {
+              chat.Message.map((message) => {
                 return (
                   <div
                     className={message.userId === currentUser.id ? "chatMessage own" : "chatMessage"}
@@ -115,6 +142,7 @@ const Chat = () => {
                   </div>
                 );
               })}
+            <div ref={messageEndRef}></div>
           </div>
           <form className="bottom" onSubmit={handleTextSubmit}>
             <textarea name="text" value={text} onChange={(e) => setText(e.target.value)}></textarea>
