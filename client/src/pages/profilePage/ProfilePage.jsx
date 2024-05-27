@@ -68,12 +68,12 @@ const ProfilePage = () => {
             </Link>
           </div>
           {data && <List posts={data.myPosts} />}
-          {data.myPosts.length === 0 && <div>Start Creating Your Own Post</div>}
+          {data && data.myPosts.length === 0 && <div>Start Creating Your Own Post</div>}
           <div className="title">
             <h1>Saved List</h1>
           </div>
           {data && <List posts={data.savedPosts} />}
-          {data.savedPosts.length === 0 && <Link to="/list">Discover and Save Your Favorites!</Link>}
+          {data && data.savedPosts.length === 0 && <Link to="/list">Discover and Save Your Favorites!</Link>}
         </div>
       </div>
       <div className="chatContainer">
