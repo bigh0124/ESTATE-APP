@@ -62,3 +62,24 @@ export const getProfilePosts = async (req, res, next) => {
     next(createError());
   }
 };
+
+export const getNotificationNumber = async (req, res, next) => {
+  const userId = req.userId;
+  try {
+    const chatsNumber = await prisma.chat.count({
+      where: {
+        userIDs: {
+          hasSome: [userId],
+        },
+        NOT: {
+          seenBy: {
+            hasSome: [userId],
+          },
+        },
+      },
+    });
+    res.status(200).json(chatsNumber);
+  } catch (err) {
+    next(createError());
+  }
+};
