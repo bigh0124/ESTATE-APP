@@ -5,6 +5,7 @@ import { apiRequest } from "../../api/apiRequest";
 import { AuthContext } from "../../context/AuthContext";
 import { format } from "timeago.js";
 import { SocketContext } from "../../context/SocketContext";
+import { useNotificationStore } from "../../lib/useNotificationStore";
 
 const Chat = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -13,6 +14,7 @@ const Chat = () => {
   const { currentUser } = useContext(AuthContext);
   const { socket } = useContext(SocketContext);
   const [text, setText] = useState("");
+  const { decrease } = useNotificationStore((state) => state);
   const queryClient = useQueryClient();
   const messageEndRef = useRef();
 
@@ -36,6 +38,9 @@ const Chat = () => {
     mutationFn: async (chatId) => {
       try {
         const res = await apiRequest.get(`/chat/getChat/${chatId}`);
+        if (!res.data.seenBy.includes(currentUser.id)) {
+          decrease();
+        }
         setChat(res.data);
         return res.data;
       } catch (err) {
