@@ -23,13 +23,25 @@ const SinglePage = () => {
       }
     },
   });
-
+  console.log(post);
   const savePost = useMutation({
     mutationFn: async () => {
       try {
         await apiRequest.post("/post/savePost", {
           postId: id,
           userId: currentUser.id,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+
+  const addChat = useMutation({
+    mutationFn: async () => {
+      try {
+        await apiRequest.post("/chat/addChat", {
+          receiverId: post.userId,
         });
       } catch (err) {
         console.log(err);
@@ -47,6 +59,15 @@ const SinglePage = () => {
     } else {
       savePost.mutate();
       setPost((prev) => ({ ...prev, isSaved: !post.isSaved }));
+    }
+  };
+
+  const handleAddChat = () => {
+    if (!currentUser) {
+      navigate("/login");
+    } else {
+      addChat.mutate();
+      navigate("/profile");
     }
   };
 
@@ -148,7 +169,7 @@ const SinglePage = () => {
               <Map items={[post]} />
             </div>
             <div className="buttons">
-              <button>
+              <button onClick={handleAddChat}>
                 <img src="/chat.png" alt="" /> Send a Message
               </button>
               <button className={post.isSaved ? "active" : ""} onClick={handleSavePost}>
