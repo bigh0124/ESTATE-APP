@@ -26,7 +26,6 @@ HI~我叫陳嘉泓<BR>
 Available Services
 ---
 * starts a server on localhost port 5173 (by default). 
-* http://localhost:5173
 
 |  Method  | Path                      |    Usage                         |
 | -------- | ------------------------- | -------------------------------- |
